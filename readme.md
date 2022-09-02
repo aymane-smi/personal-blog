@@ -1,6 +1,6 @@
 ## PERSONAL BLOG
 
-# a simple blog with light UI using differents backends for the same API
+# a simple blog with lightweight UI using differents backends for the same API
 
 - JAVA (Spring Boot)
 - Golang (Go-fiber)
