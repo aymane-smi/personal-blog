@@ -29,13 +29,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-		System.out.println("configure 1");
 		auth.userDetailsService(userServicesImpl).passwordEncoder(bcryptPasswordEncoder);
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception{
-		System.out.println("configure 2");
 		CustomAuthentificationFilter authFilter = new CustomAuthentificationFilter(AuthenticationManagerBean());
 		authFilter.setFilterProcessesUrl("/api/auth/login");
 		http.csrf().disable().authorizeRequests()
