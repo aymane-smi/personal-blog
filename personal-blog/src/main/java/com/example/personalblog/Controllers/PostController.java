@@ -19,6 +19,7 @@ import com.example.personalblog.Services.PostServices.PostServicesImpl;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 
 @RestController
 @RequestMapping("/api/post")
@@ -58,11 +61,15 @@ public class PostController {
 	
 	@GetMapping("/images/{filename}")
 	public ResponseEntity<Resource> showFile(@PathVariable("filename") String filename)throws IOException{
-		Path Filepath = Paths.get(DIRECTORY).toAbsolutePath().normalize();
+		Path Filepath = Paths.get(DIRECTORY).toAbsolutePath().normalize().resolve(filename);
 		if(!Files.exists(Filepath))
 			throw new FileNotFoundException(filename+" not found");
 		Resource resource = new UrlResource(Filepath.toUri());
-		return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(Filepath))).body(resource);
+		HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("File-Name", filename);
+        httpHeaders.add(CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(Filepath)))
+                .headers(httpHeaders).body(resource);
 	}
 	
 }
