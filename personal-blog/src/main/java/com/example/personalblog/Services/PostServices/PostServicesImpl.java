@@ -1,6 +1,8 @@
 package com.example.personalblog.Services.PostServices;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +19,8 @@ import com.example.personalblog.Repositories.PathRepository;
 import com.example.personalblog.Repositories.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +36,7 @@ public class PostServicesImpl implements PostServices{
 	
 	private final PostRepository postRepository;
 	//private final PathRepository path;
+	public static final String DIRECTORY = System.getProperty("user.home") + "/Desktop/personal-blog/personal-blog/images";	
 	
 	public Post save(PostDTO post) {
 		
@@ -53,12 +58,19 @@ public class PostServicesImpl implements PostServices{
 		try {
 			if(Filename.contains(".."))
 				throw new InvalidFileFormat("invalid file format");
-			Path targetLocation = (Paths.get("~/Desktop/personal-blog/personal-blog/images")).resolve(Filename);
+			Path targetLocation = Paths.get(DIRECTORY, Filename).toAbsolutePath().normalize();
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 		}catch(IOException | InvalidFileFormat e) {
 			System.out.println(e.getMessage());
 		}
 		return Filename;
+	}
+	
+	public Path getFile(String filename) throws FileNotFoundException, MalformedURLException{
+		Path Filepath = Paths.get(DIRECTORY).toAbsolutePath().normalize();
+		if(!Files.exists(Filepath))
+			throw new FileNotFoundException(filename+" not found");
+		return Filepath;
 	}
 
 }
