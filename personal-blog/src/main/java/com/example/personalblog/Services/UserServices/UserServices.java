@@ -6,6 +6,7 @@ import com.example.personalblog.Models.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserServices extends UserDetailsService{
-	User save(User user);
+	//User save(User user);
 	User getUser(String username);
+	User editUser(String username, String Fullname, String newUsername, String newPassword);
 }

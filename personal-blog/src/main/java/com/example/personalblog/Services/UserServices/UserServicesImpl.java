@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class UserServicesImpl implements UserDetailsService{
+public class UserServicesImpl implements UserDetailsService, UserServices{
 	
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -31,7 +31,7 @@ public class UserServicesImpl implements UserDetailsService{
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
 		User user = userRepository.findByUsername(username);
 		log.info("user '{}' found with password {}", user.getUsername(), user.getPassword());
-		CustomUserDetails customUser = new CustomUserDetails(user.getUsername(), user.getPassword(), new ArrayList<>(), user.getFullName());
+		CustomUserDetails customUser = new CustomUserDetails(user.getUsername(), user.getPassword(), new ArrayList<>(), user.getFullname());
 		log.info("{}", customUser);
 		return customUser;
 	}
@@ -43,6 +43,19 @@ public class UserServicesImpl implements UserDetailsService{
 	
 	public User getUser(String username) {
 		return userRepository.findByUsername(username);
+	}
+	
+	@Override
+	public User editUser(String username, String Fullname, String newUsername, String newPassword) {
+		User user = userRepository.findByUsername(username);
+		log.info("{}-{}", user, username);
+		if(!Fullname.equals(""))
+			user.setFullname(Fullname);
+		if(!newUsername.equals(""))
+			user.setUsername(newUsername);
+		if(!newPassword.equals(""))
+			user.setPassword(passwordEncoder.encode(newPassword));
+		return userRepository.save(user);
 	}
 	
 

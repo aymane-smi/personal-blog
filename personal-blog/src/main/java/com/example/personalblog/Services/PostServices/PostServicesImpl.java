@@ -45,8 +45,11 @@ public class PostServicesImpl implements PostServices{
 		newPost.setContent(post.getContent());
 		newPost.setImagePath(post.getImagePath());
 		newPost.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+		log.info("{}", post);
 		
 		postRepository.save(newPost);
+		
+		log.info("post saved");
 		
 		return newPost;
 	}
