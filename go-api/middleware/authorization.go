@@ -11,7 +11,7 @@ import (
 
 func Authorization(c *fiber.Ctx) error {
 	godotenv.Load()
-	token := strings.Split(string(c.Context().Request.Header.Peek("Authorization")), "")[1]
+	token := strings.Split(string(c.Context().Request.Header.Peek("Authorization")), " ")[1]
 
 	_, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("SECRET_KEY")), nil

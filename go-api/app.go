@@ -11,9 +11,13 @@ import (
 func main() {
 	app := fiber.New()
 
+	app.Static("/images", "./images")
+
 	config.Connect()
 
 	router.AuthRouter(app)
+
+	router.PostRouter(app)
 
 	fmt.Println(app.Listen(":3000"))
 }
