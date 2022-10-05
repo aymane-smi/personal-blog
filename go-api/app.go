@@ -11,7 +11,7 @@ import (
 func main() {
 	app := fiber.New()
 
-	app.Static("/images", "./images")
+	app.Static("/api/post/images", "./images")
 
 	config.Connect()
 
