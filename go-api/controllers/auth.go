@@ -110,3 +110,44 @@ func Login(c *fiber.Ctx) error {
 		"token":   token,
 	})
 }
+
+//edit user
+
+func EditUser(c *fiber.Ctx) error {
+	var body map[string]string
+
+	if err := c.BodyParser(&body); err != nil {
+		c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "something went wrong!",
+		})
+	}
+
+	if body["username"] == "" && body["password"] == "" && body["fullname"] == "" {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"message": "no data provided!",
+		})
+	}
+
+	id, _ := strconv.Atoi(body["id"])
+	config.DB.Where("id = ?", id).First(&user)
+
+	if body["username"] != "" {
+		user.Username = body["username"]
+	}
+
+	if body["password"] != "" {
+		password, _ := bcrypt.GenerateFromPassword([]byte(body["password"]), 12)
+		user.Password = string(password)
+	}
+
+	if body["fullname"] != "" {
+		user.Fullname = body["fullname"]
+	}
+
+	config.DB.Save(&user)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "user updated!",
+		"user":    user,
+	})
+}

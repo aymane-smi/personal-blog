@@ -9,4 +9,5 @@ import (
 func AuthRouter(app *fiber.App) {
 	app.Post("/api/auth/login", controllers.Login)
 	app.Post("/api/auth/signup", controllers.SignUp)
+	app.Put("/api/auth/edit", controllers.EditUser)
 }

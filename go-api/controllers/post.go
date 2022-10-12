@@ -63,7 +63,7 @@ func EditPost(c *fiber.Ctx) error {
 	form, errForm := c.MultipartForm()
 	file, errFile := c.FormFile("file")
 
-	fmt.Println(form, file)
+	fmt.Println(form)
 
 	if errFile != nil && errForm != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -75,7 +75,7 @@ func EditPost(c *fiber.Ctx) error {
 			"message": "invalid id",
 		})
 	} else {
-		config.DB.Where("id = ", form.Value["id"][0]).First(&post)
+		config.DB.Where("id = ?", form.Value["id"][0]).First(&post)
 	}
 
 	if form.Value["title"][0] == "" && form.Value["content"][0] == "" && form.File == nil {
@@ -86,14 +86,17 @@ func EditPost(c *fiber.Ctx) error {
 
 	if form.Value["title"][0] != "" {
 		post.Title = form.Value["title"][0]
+		//config.DB.Where("id = ?", form.Value["id"][0]).Update("title", post.Title)
 	}
 
 	if form.Value["content"][0] != "" {
 		post.Content = form.Value["content"][0]
+		//config.DB.Where("id = ?", form.Value["id"][0]).Update("content", post.Content)
 	}
 
 	if file != nil {
 		post.ImagePath = file.Filename
+		//config.DB.Where("id = ?", form.Value["id"][0]).Update("image_path", post.ImagePath)
 		c.SaveFile(file, fmt.Sprintf("./images/%s", file.Filename))
 	}
 	config.DB.Save(&post)
