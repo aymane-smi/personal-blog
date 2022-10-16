@@ -11,9 +11,15 @@ import (
 
 func Authorization(c *fiber.Ctx) error {
 	godotenv.Load()
-	token := strings.Split(string(c.Context().Request.Header.Peek("Authorization")), " ")[1]
+	token := strings.Split(string(c.Context().Request.Header.Peek("Authorization")), " ")
 
-	_, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
+	if strings.Contains(c.Context().Request.Header.String(), "Authorization") == false {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "token not found",
+		})
+	}
+
+	_, err := jwt.ParseWithClaims(token[1], &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("SECRET_KEY")), nil
 	})
 

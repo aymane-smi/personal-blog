@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 	"personal-blog/config"
 	"personal-blog/models"
@@ -130,6 +131,7 @@ func EditUser(c *fiber.Ctx) error {
 
 	id, _ := strconv.Atoi(body["id"])
 	config.DB.Where("id = ?", id).First(&user)
+	fmt.Println(user)
 
 	if body["username"] != "" {
 		user.Username = body["username"]
