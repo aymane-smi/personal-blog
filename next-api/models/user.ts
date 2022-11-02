@@ -8,7 +8,7 @@ const userSchema = new Schema<user>({
     username: {
         type: String, required: true,
     },
-    password: String,
+    password: {type: String,},
 });
 
 export const User = model<user>("User", userSchema);
