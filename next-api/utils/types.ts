@@ -15,3 +15,9 @@ export type msgError = {
 export type loginResponse = userResponse & {
     token: String,
 }
+
+export type post = {
+    Title: String,
+    Content: String,
+    ImagePath: String,
+};

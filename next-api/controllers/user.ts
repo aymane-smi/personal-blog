@@ -1,8 +1,9 @@
-import { msgError, user, userResponse } from "../utils/types";
+import { loginResponse, msgError, user, userResponse } from "../utils/types";
 import { User } from "../models/user";
 import { NextApiRequest, NextApiResponse } from "next";
 import * as bcrypt  from "bcryptjs";
 import { sign } from "jsonwebtoken";
+import { connection } from "mongoose";
 
 export const signup = async (req: NextApiRequest, res: NextApiResponse<userResponse | msgError>)=>{
     try{
@@ -10,6 +11,7 @@ export const signup = async (req: NextApiRequest, res: NextApiResponse<userRespo
         const result = await User.create(req.body);
         console.log(result);
         console.log("user created!");
+        connection.close();
         res.status(200).json({
             user: result,
             message: "user created",
@@ -23,16 +25,19 @@ export const signup = async (req: NextApiRequest, res: NextApiResponse<userRespo
 };
 
 export const editUser = async(req: NextApiRequest, res: NextApiResponse<userResponse | msgError>)=>{
-    console.log(req.body);
-    const {Fullname, username, password, id } = req.body
-    try{    
-        const result = await User.findByIdAndUpdate(req.body.id, {Fullname: Fullname, username: username});
-        console.log("user.updated!");
+    const obj = {...req.body};
+    delete obj.id; 
+    try{
+        if(obj.password)
+            obj.password = await bcrypt.hash(obj.password, 12);
+        const result = await User.findByIdAndUpdate(req.body.id, obj);
+        connection.close();
         res.status(200).json({
             message: "user updated!",
-            user: {Fullname: result.Fullname, username: result.username, password: result.password},
+            user: result,
         });
     }catch(e){
+        console.log(e);
         res.status(500).json({
             message: "something went wrong!",
         });
@@ -48,6 +53,7 @@ export const login = async(req: NextApiRequest, res: NextApiResponse<loginRespon
             });
         const { username } = req.body;
         const user = await User.findOne({username,});
+        connection.close();
         if(!user)
             res.status(404).json({
                 message: "invalid user/password"

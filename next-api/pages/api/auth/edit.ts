@@ -1,13 +1,13 @@
-import { connect } from "http2";
+import { connect } from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import { editUser } from "../../../controllers/user";
 import { msgError, userResponse } from "../../../utils/types";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<userResponse | msgError>){
+    await connect(process.env.MONGODB_URL);
+    console.log(process.env.MONGODB_URL);
     if(req.method === "PUT"){
-        //console.log(req.body, process.env.MONGODB_URL);
-        await connect(process.env.MONGODB_URL);
         await editUser(req, res);
     }
     else
