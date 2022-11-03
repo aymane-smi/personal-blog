@@ -11,3 +11,7 @@ export type user = {
 export type msgError = {
     message: String,
 }
+
+export type loginResponse = userResponse & {
+    token: String,
+}
