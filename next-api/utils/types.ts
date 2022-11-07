@@ -21,3 +21,13 @@ export type post = {
     Content: String,
     ImagePath: String,
 };
+
+export type PostMessage = {
+    message: String,
+    post: post,
+}
+
+export type fieldsType = {
+    Title: String,
+    Content: String,
+}

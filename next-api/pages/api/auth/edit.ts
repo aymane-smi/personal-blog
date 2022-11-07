@@ -5,7 +5,7 @@ import { msgError, userResponse } from "../../../utils/types";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<userResponse | msgError>){
-    await connect(process.env.MONGODB_URL);
+    await connect(process.env.MONGODB_URL as string);
     console.log(process.env.MONGODB_URL);
     if(req.method === "PUT"){
         await editUser(req, res);

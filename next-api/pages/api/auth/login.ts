@@ -5,7 +5,7 @@ import { login } from "../../../controllers/user";
 import { loginResponse, msgError } from "../../../utils/types";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<loginResponse | msgError>){
-    await connect(process.env.MONGODB_URL);
+    await connect(process.env.MONGODB_URL as string);
     if(req.method === "POST")
         login(req, res);
     else

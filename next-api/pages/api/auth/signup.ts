@@ -5,8 +5,7 @@ import { msgError, user } from "../../../utils/types";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<user | msgError>){
     if(req.method === "POST"){
-        console.log(process.env.MONGODB_URL);
-        await connect(process.env.MONGODB_URL);
+        await connect(process.env.MONGODB_URL as string);
         signup(req, res);
     }else
         res.status(404).json({
